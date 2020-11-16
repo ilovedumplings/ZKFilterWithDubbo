@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author DaTou
- * @Description
+ * @Description 使用时需要配置dubbo服务延迟暴露
  * @Date 2020/9/9
  **/
 @ConditionalOnProperty(name = "spring.profiles.active",havingValue = "dev")
@@ -40,12 +40,10 @@ public class ServiceBeanLocalConfig implements BeanFactoryPostProcessor {
             if (RegistryConfig.class.getName().equalsIgnoreCase(beanDefinition.getBeanClassName())){
                 MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
                 mutablePropertyValues.addPropertyValue("register",false);
-                defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
             }
             if (ProtocolConfig.class.getName().equalsIgnoreCase(beanDefinition.getBeanClassName())){
                 MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
                 mutablePropertyValues.addPropertyValue("port",PORT);
-                defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
             }
         }
     }
