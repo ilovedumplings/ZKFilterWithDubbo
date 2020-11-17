@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,20 +61,27 @@ public class ReferenceXMLLocalConfig implements BeanFactoryPostProcessor {
              * 使用api配置的beanDefiniton不好区分,改在ReferenceFilter.class中获取
              */
             if(ReferenceBean.class.getName().equalsIgnoreCase(beanDefinition.getBeanClassName())){
-                PropertyValue propertyValue ;
-                if ((propertyValue=beanDefinition.getPropertyValues().getPropertyValue("interface"))!=null){
-                    if (excludeInterfaceList.contains(propertyValue.getValue())) {
-                        return;
-                    }
+                filter(beanDefinition,beanName,defaultListableBeanFactory);
+            }else if (beanDefinition.getSource()!=null
+                    && beanDefinition.getSource() instanceof MethodMetadataReadingVisitor){
+                MethodMetadataReadingVisitor methodMetadataReadingVisitor = (MethodMetadataReadingVisitor) beanDefinition.getSource();
+                if ("com.alibaba.dubbo.config.spring.ReferenceBean".equals(methodMetadataReadingVisitor.getReturnTypeName())){
+                    filter(beanDefinition,beanName,defaultListableBeanFactory);
                 }
-
-                MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
-                mutablePropertyValues.addPropertyValue("url",ReferenceLocalConfig.URL);
-                defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
             }
         }
     }
 
-//    String pattern = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
+    private void filter(BeanDefinition beanDefinition,String beanName,DefaultListableBeanFactory defaultListableBeanFactory){
+        PropertyValue propertyValue ;
+        if ((propertyValue=beanDefinition.getPropertyValues().getPropertyValue("interface"))!=null){
+            if (excludeInterfaceList.contains(propertyValue.getValue())) {
+                return;
+            }
+        }
 
+        MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
+        mutablePropertyValues.addPropertyValue("url",ReferenceLocalConfig.URL);
+        defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
+    }
 }

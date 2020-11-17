@@ -40,10 +40,12 @@ public class ServiceBeanLocalConfig implements BeanFactoryPostProcessor {
             if (RegistryConfig.class.getName().equalsIgnoreCase(beanDefinition.getBeanClassName())){
                 MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
                 mutablePropertyValues.addPropertyValue("register",false);
+                defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
             }
             if (ProtocolConfig.class.getName().equalsIgnoreCase(beanDefinition.getBeanClassName())){
                 MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
                 mutablePropertyValues.addPropertyValue("port",PORT);
+                defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
             }
         }
     }

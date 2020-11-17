@@ -41,15 +41,6 @@ public class ReferenceLocalConfig {
     public static Map<Class,String> map = new HashMap<>();
 
     @Bean
-    public ReferenceApiLocalConfig referenceApiLocalConfig(){
-        if (CollectionUtils.isEmpty(excludeInterfaceList)){
-            return new ReferenceApiLocalConfig();
-        }else {
-            return new ReferenceApiLocalConfig(excludeInterfaceList);
-        }
-    }
-
-    @Bean
     public ReferenceXMLLocalConfig referenceXMLLocalConfig(){
         if (CollectionUtils.isEmpty(excludeInterfaceList)){
             return new ReferenceXMLLocalConfig();
