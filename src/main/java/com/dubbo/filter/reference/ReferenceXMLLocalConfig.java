@@ -82,6 +82,7 @@ public class ReferenceXMLLocalConfig implements BeanFactoryPostProcessor {
 
         MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();
         mutablePropertyValues.addPropertyValue("url",ReferenceLocalConfig.URL);
+        //此处重新注册bd的原因是,在spring加载bean的过程当中,取bd不是指直接取的bdmap而是mergerBDmap,所以要重新注册,清空对应的mbdmap
         defaultListableBeanFactory.registerBeanDefinition(beanName,beanDefinition);
     }
 }
